@@ -50,6 +50,7 @@ public class TwoPointersForNumSum {
     // nums[start]==start[i-1]可以剪枝，但是nums[i]=nums[i-1]时候不能剪枝,end那边的指针也剪枝一次
     //这里还有一个技巧，那就是因为要返回不重复的数值对，依次遍历时，i与i+1时可能有相同的满足情况
     //但是i与i+1不容易剪枝，因此临时用hashset存储，最后return的时候new ArrayList<>(HashSet)一下
+    //注意Arrays.asList这个api的使用
     public List<List<Integer>> threeSum(int[] nums) {
         HashSet<List<Integer>> res = new HashSet<List<Integer>>();
         Arrays.sort(nums);

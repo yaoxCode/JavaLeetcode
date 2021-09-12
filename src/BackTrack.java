@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class BackTrack {
     /**
      * 如何判断一题目是否用回溯可以看两点
@@ -18,6 +20,82 @@ public class BackTrack {
      * 7。 对于stack注意，因此要保存到res中，所以res.add(new ArrayList<>(Stack)),但是对于StringBuffer
      * 直接add(sb.toString)
      * 8. 最主要的难点是可选路径的选择以及遍历，最后是实时的add和remove，
-     *
+     * 9. 如何写递归，就直接模拟最后依次选择了，前面都选择完成了，那么针对最后依次选择这个递归函数如何写
      */
+
+    /**
+     * NO.46 Permutations
+     * 给一定不重复元素的数组nums，给出所有全排列的可能性
+     * 1. 可选路径为nums,无论哪次递归都是nums从头遍历
+     * 2. 进入当前队列的条件为 !track.contains(nums[i])
+     * 3. 递归结束条件为 当前路径有nums.length()个元素了
+     * 4. 这里不需要纠结当前路径超出了咋办，这里是由递归出口控制最终某个结果里元素个数的，
+     * 后面很多题目也是这样，不需要纠结最终当前队列的元素个数超过了咋办，超过了递归就return了
+     * 5。 这里就是标准的递归前add,递归后remove
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res = new LinkedList<>();
+        List<Integer> track = new LinkedList<>();
+        //这里使用dfs搜索nums数组
+        permuteDfs(nums,track,res);
+        return res;
+
+    }
+    private void permuteDfs(int[]nums,List<Integer> track,List<List<Integer>> res){
+        for(int i =0;i<nums.length;i++) {
+            if (track.size() == nums.length) {
+                res.add(new LinkedList(track));
+                return;
+            }
+
+            if (track.contains(nums[i])) continue;
+            track.add(nums[i]);
+            permuteDfs(nums,track,res);
+            track.remove(track.lastIndexOf(nums[i]));
+        }
+    }
+
+
+    /**
+     * NO.17
+     * 手机九宫格按数字，返回所以数字给定的所有字母的情形
+     * 1. 这里当前路径是字符串，所有由stringbuffer存储，遍历出一个就可以add
+     * 2. 可选路径，这里假设键盘输入了一个2 ，那么可选路径就是2对应的abc里遍历，不用考虑后面按的3
+     * 这个是由递归参数决定的，下次递归就是遍历3对应的def
+     * 3. 这里怎么确保返回的字符串长度等于输入的数字长度呢，由递归出口决定，sb.length()==digit.len就终止递归了
+     * 4.这里也是标准的递归前add，递归后remove
+     * 5, 这里注意的可选路径是字符串，但是字符串不容易遍历，所有都是遍历s.toArray();
+     */
+    public List<String> letterCombinations(String digits) {
+        List<String> res = new ArrayList<>();
+        StringBuffer sb = new StringBuffer();
+        Map<Character,Character[]> phoneKeyBoardMap = new HashMap<>();
+        phoneKeyBoardMap.put('2',new Character[] {'a','b','c'});
+        phoneKeyBoardMap.put('3',new Character[] {'d','e','f'});
+        phoneKeyBoardMap.put('4',new Character[] {'g','h','i'});
+        phoneKeyBoardMap.put('5',new Character[] {'j','k','l'});
+        phoneKeyBoardMap.put('6',new Character[] {'m','n','o'});
+        phoneKeyBoardMap.put('7',new Character[] {'p','q','r','s'});
+        phoneKeyBoardMap.put('8',new Character[] {'t','u','v'});
+        phoneKeyBoardMap.put('9',new Character[] {'w','x','y','z'});
+        if (digits.length()==0) return res;
+
+        phoneKeyBoardBackTrack(res,phoneKeyBoardMap,new StringBuffer(),0,digits);
+        //递归搜索
+        return res;
+
+    }
+    public void phoneKeyBoardBackTrack(List<String>res, Map<Character,Character[]> map,StringBuffer currentS,int index,String digits){
+        if ( currentS.length() == digits.length()) {
+            res.add(currentS.toString());
+            return ;
+        }
+        System.out.println(map.get(digits.charAt(0)).length);
+        for (int i = 0; i < map.get(digits.charAt(index)).length; i++) {
+            currentS.append(map.get(digits.charAt(index))[i]);
+            //这里可以剪枝，index+1 < digits.length才进入递归，否则直接delete
+            phoneKeyBoardBackTrack(res,map,currentS,index+1,digits);
+            currentS.deleteCharAt(currentS.length()-1);
+        }
+    }
 }
