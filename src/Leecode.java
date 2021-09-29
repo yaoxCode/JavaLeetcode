@@ -55,20 +55,6 @@ public class Leecode {
         return new ArrayList<List<Integer>>(res);
     }
 
-    //No.53
-    public int subTotalList(int[] nums) {
-        int rs = Integer.MIN_VALUE;
-        int res[] = new int[nums.length];
-        res[0] = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            int tmp = nums[i] + res[i - 1] > nums[i] ? nums[i] + res[i - 1] : nums[i];
-            res[i] = tmp;
-        }
-        for (int i = 0; i < res.length; i++) {
-            rs = rs < res[i] ? res[i] : rs;
-        }
-        return rs;
-    }
 
     //NO.121
     //买卖股票的最佳时间，一次买，一次卖，先买先卖，返回最大收益
